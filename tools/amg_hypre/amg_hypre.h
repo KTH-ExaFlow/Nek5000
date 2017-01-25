@@ -70,7 +70,7 @@ static void sub_mat(hypre_CSRMatrix **subA, const hypre_CSRMatrix *A,
 static void diag(double *D, const hypre_CSRMatrix *A);
 
 /*
-    Addition/subtraction between csr and diagonal matrices
+    Multiplication between csr and diagonal matrices
     OUTPUT:
     - A: A=A*D or A=D*A
     INPUT:
@@ -227,8 +227,9 @@ static void ar_scal_op(double *a, const double scal, const int n,
 static void amg_export(const struct amg_setup_data *data);
 
 /*
-    Function to save matrices
+    Save matrices
     OUTPUT:
+    - file 'filename' with matrix data
     - len(n): length of each row
     INPUT:
     - nl: number of levels
@@ -248,9 +249,9 @@ static void savemats(int *len, const int n, const int nl, const int *lvl,
 static int max_row_nnz(const hypre_CSRMatrix *mat);
 
 /*
-    Function to save vectors
+    Save vectors
     OUTPUT:
-    - file 'filename'
+    - file 'filename' with vector data
     INPUT:
     - nl: number of levels
     - data: data with all info about setup

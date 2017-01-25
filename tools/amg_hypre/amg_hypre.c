@@ -15,12 +15,13 @@
     Code for performing the AMG setup for Nek5000 using the linear algebra
     library Hypre.
 
-    Author: Nicolas Offermans
-    Based on the the Ph.D. thesis by J. Lottes,
-    "Towards Robust Algebraic Multigrid Methods for Nonsymmetric Problems",
-    and on his original implementation of the setup in Matlab.
+    Author of this Hyper version: Nicolas Offermans
+    Based on the original implementation of the AMG setup in Matlab by 
+    James Lottes. A thorough description of the original setup can be found in
+    his Ph. D. thesis "Towards Robust Algebraic Multigrid Methods for 
+    Nonsymmetric Problems".
 
-    - Last update: 19 December, 2016
+    - Last update: 25 January, 2017
 */
 
 int main(int argc, char *argv[])
@@ -33,11 +34,11 @@ int main(int argc, char *argv[])
     MPI_Comm_size(MPI_COMM_WORLD, &size);
     if (size > 1)
     {
-        printf("Only one process supported.\n"); 
+        printf("Only one MPI process supported.\n"); 
         return 0;
     }
 
-    /* Get user input for coarsening strategy */
+    /* Get user's input for coarsening strategy */
     int coars_strat, ret;
     char scoars[30];
     printf("Choose a coarsening method. Available options are:\n");
@@ -222,7 +223,7 @@ int main(int argc, char *argv[])
 
 	hypre_ParAMGData *amg_data = (hypre_ParAMGData*) solver; 
             // structure hypre_ParAMGData is described in parcsr_lspar_amg.h
-    int numlvl = (amg_data)->num_levels; // number of leveks
+    int numlvl = (amg_data)->num_levels; // number of levels
     hypre_ParCSRMatrix **A_array = (amg_data)->A_array; 
     hypre_ParCSRMatrix **P_array = (amg_data)->P_array;// Interpolation operator
     int **CF_marker_array        = (amg_data)->CF_marker_array;
@@ -238,9 +239,9 @@ int main(int argc, char *argv[])
     data->idc   = malloc( maxlvls    * sizeof (int*));
     data->idf   = malloc( maxlvls    * sizeof (int*));
     data->D     = malloc((maxlvls-1) * sizeof (double*));
-    data->Af  = malloc((maxlvls-1) * sizeof (hypre_CSRMatrix *));
-    data->W   = malloc((maxlvls-1) * sizeof (hypre_CSRMatrix *));
-    data->AfP = malloc((maxlvls-1) * sizeof (hypre_CSRMatrix *));
+    data->Af    = malloc((maxlvls-1) * sizeof (hypre_CSRMatrix *));
+    data->W     = malloc((maxlvls-1) * sizeof (hypre_CSRMatrix *));
+    data->AfP   = malloc((maxlvls-1) * sizeof (hypre_CSRMatrix *));
 
     /* Exctract data and compute smoother at each level */
     int lvl;
@@ -540,7 +541,7 @@ static void amg_export(const struct amg_setup_data *data)
     int nlevels = data->nlevels;
     int n = data->n[0];
     
-    /* Find at what last level each variable appears */
+    /* Find what is the last level at which each variable appears */
     int *lvl = malloc(n * sizeof (int));
     int i, j;
 
@@ -1258,7 +1259,7 @@ static long readfile(double *data, long max, const char *name)
 
 /* 
     Print CSR matrix
-    For debugging purposes 
+    For debugging purposes only
 */
 void print_csrmat(hypre_CSRMatrix *A)
 {
